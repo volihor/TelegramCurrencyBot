@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.List;
 //test
+//test2
 public class User {
     private Long chatId;
     private int charsAfterComa;
