@@ -2,27 +2,21 @@ package org.example;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.security.PublicKey;
 import java.util.*;
 
-public class Main extends TelegramLongPollingBot {
-    private Map<Long, Integer> levels = new HashMap<>();
-    //test comm
-    //test comm2
+public class TelegramFront extends TelegramLongPollingBot {
+
     public static void main(String[] args) throws TelegramApiException {
         TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
-        api.registerBot(new Main());
+        api.registerBot(new TelegramFront());
+        //SetMyCommands
     }
 
     @Override
@@ -35,6 +29,7 @@ public class Main extends TelegramLongPollingBot {
         return "6939606814:AAHurPGRFOC36BlmekpJw31vujhlseh3pEI";
     }
 
+
     @Override
     public void onUpdateReceived(Update update) {
         Long chatId = getChatId(update);
@@ -44,10 +39,7 @@ public class Main extends TelegramLongPollingBot {
             SendMessage message = createMessage("Ласкаво просимо. Цей бот допоможе відслідковувати актуальні курси валют");
             message.setChatId(chatId);
 
-            attachButtons(message, Map.of(
-                    "Налаштування", "settings",
-                    "Отримати інфо", "get_info"
-            ));
+            attachButtons(message, startButtons());
 
             sendApiMethodAsync(message);
         }
@@ -58,10 +50,7 @@ public class Main extends TelegramLongPollingBot {
                 SendMessage message = createMessage("При натисканні на кнопку \"Отримати інфо\"\" користувач отримує актуальний курс відповідно до його налаштувань (округлення, банк і т.д.)");
                 message.setChatId(chatId);
 
-                attachButtons(message, Map.of(
-                        "Налаштування", "settings",
-                        "Отримати інфо", "get_info"
-                ));
+                attachButtons(message, getInfoButtons());
 
                 sendApiMethodAsync(message);
             }
@@ -71,15 +60,7 @@ public class Main extends TelegramLongPollingBot {
                 SendMessage message = createMessage("Налаштування");
                 message.setChatId(chatId);
 
-                LinkedHashMap<String,String> settings = new LinkedHashMap<String,String>();
-                settings.putAll(Map.of(
-                        "Час оповіщень", "time_of_notifications",
-                        "Банк", "bank",
-                        "Валюти", "values",
-                        "Кількість знаків після коми", "chars_after_coma"
-                ));
-
-                attachButtons(message, settings);
+                attachButtons(message, settingsButtons());
                 sendApiMethodAsync(message);
             }
 
@@ -88,11 +69,7 @@ public class Main extends TelegramLongPollingBot {
                 SendMessage message = createMessage("Виберіть кількість знаків після коми");
                 message.setChatId(chatId);
 
-                attachButtons(message, Map.of(
-                        "2", "chars_after_coma_2",
-                        "3", "chars_after_coma_3",
-                        "4", "chars_after_coma_4"
-                ));
+                attachButtons(message, charsAfterComaButtons());
                 sendApiMethodAsync(message);
             }
 
@@ -101,11 +78,7 @@ public class Main extends TelegramLongPollingBot {
                 SendMessage message = createMessage("Виберіть банк");
                 message.setChatId(chatId);
 
-                attachButtons(message, Map.of(
-                        "НБУ", "bank_nbu",
-                        "ПриватБанк", "bank_privat",
-                        "Монобанк", "bank_mono"
-                ));
+                attachButtons(message, bankButtons());
                 sendApiMethodAsync(message);
             }
 
@@ -114,29 +87,96 @@ public class Main extends TelegramLongPollingBot {
                 SendMessage message = createMessage("Виберіть валюту");
                 message.setChatId(chatId);
 
-                attachButtons(message, Map.of(
-                        "USD", "bank_usd",
-                        "EUR", "bank_eur"
-                ));
+                attachButtons(message, valuesButtons());
                 sendApiMethodAsync(message);
             }
 
             if (update.getCallbackQuery().getData().equals("time_of_notifications")){
 
-                SendMessage message = createMessage("*Вітаємо на останньому рівні! Твій гусак - готова біологічна зброя - бандерогусак.*\n" +
-                        "Баланс: 50 монет. \n" +
-                        "Тепер ти можеш придбати Джавелін і глушити чмонь");
+                SendMessage message = createMessage("Виберіть час сповіщення");
                 message.setChatId(chatId);
 
-                attachButtons(message, Map.of(
-                        "Купити Джавелін (50 монет)", "level_4_task"
-                ));
+                attachButtons(message, timeOfNotificationsButtons());
                 sendApiMethodAsync(message);
             }
 
         }
     }
-    public Long getChatId(Update update){
+    private LinkedHashMap<String,String> startButtons(){
+        LinkedHashMap<String,String> startButtons = new LinkedHashMap<String,String>();
+
+        startButtons.put("Отримати інфо", "get_info");
+        startButtons.put("Налаштування", "settings");
+
+        return startButtons;
+    }
+    private LinkedHashMap<String,String> getInfoButtons(){
+        LinkedHashMap<String,String> getInfoButtons = new LinkedHashMap<String,String>();
+
+        getInfoButtons.put("Отримати інфо", "get_info");
+        getInfoButtons.put("Налаштування", "settings");
+
+        return getInfoButtons;
+    }
+
+    private LinkedHashMap<String,String> settingsButtons(){
+        LinkedHashMap<String,String> settingsButtons = new LinkedHashMap<String,String>();
+
+        settingsButtons.put("Кількість знаків після коми", "chars_after_coma");
+        settingsButtons.put("Банк", "bank");
+        settingsButtons.put("Валюти", "values");
+        settingsButtons.put("Час сповіщень", "time_of_notifications");
+
+        return settingsButtons;
+    }
+    private LinkedHashMap<String,String> charsAfterComaButtons(){
+        LinkedHashMap<String,String> charsAfterComaButtons = new LinkedHashMap<String,String>();
+
+        charsAfterComaButtons.put("2", "chars_after_coma_2");
+        charsAfterComaButtons.put("3", "chars_after_coma_3");
+        charsAfterComaButtons.put("4", "chars_after_coma_4");
+
+        return charsAfterComaButtons;
+    }
+
+    private LinkedHashMap<String,String> valuesButtons() {
+        LinkedHashMap<String,String> valuesButtons = new LinkedHashMap<String,String>();
+
+        valuesButtons.put("USD", "values_usd");
+        valuesButtons.put("EUR", "values_eur");
+
+        return valuesButtons;
+    }
+
+    private  LinkedHashMap<String,String> bankButtons() {
+        LinkedHashMap<String,String> bankButtons = new LinkedHashMap<String,String>();
+
+        bankButtons.put("НБУ", "bank_nbu");
+        bankButtons.put("ПриватБанк", "bank_privat");
+        bankButtons.put("Монобанк", "bank_mono");
+
+        return bankButtons;
+    }
+
+    private LinkedHashMap<String,String> timeOfNotificationsButtons(){
+        LinkedHashMap<String,String> timeOfNotificationsButtons = new LinkedHashMap<String,String>();
+
+        timeOfNotificationsButtons.put("9", "time_of_notifications_9");
+        timeOfNotificationsButtons.put("10", "time_of_notifications_10");
+        timeOfNotificationsButtons.put("11", "time_of_notifications_11");
+        timeOfNotificationsButtons.put("12", "time_of_notifications_12");
+        timeOfNotificationsButtons.put("13", "time_of_notifications_13");
+        timeOfNotificationsButtons.put("14", "time_of_notifications_14");
+        timeOfNotificationsButtons.put("15", "time_of_notifications_15");
+        timeOfNotificationsButtons.put("16", "time_of_notifications_16");
+        timeOfNotificationsButtons.put("17", "time_of_notifications_17");
+        timeOfNotificationsButtons.put("18", "time_of_notifications_18");
+        timeOfNotificationsButtons.put("Вимкнути сповіщення", "time_of_notifications_off");
+
+        return timeOfNotificationsButtons;
+    }
+
+    private Long getChatId(Update update){
         if (update.hasMessage()){
             return update.getMessage().getFrom().getId();
         }
@@ -148,14 +188,14 @@ public class Main extends TelegramLongPollingBot {
         return null;
     }
 
-    public SendMessage createMessage(String text){
+    private SendMessage createMessage(String text){
         SendMessage message = new SendMessage();
         //message.setText(new String(text.getBytes(), StandardCharsets.UTF_8));
         message.setText(text);
         message.setParseMode("markdown");
         return message;
     }
-    public void attachButtons(SendMessage message,LinkedHashMap<String,String> buttons){
+    private void attachButtons(SendMessage message,LinkedHashMap<String,String> buttons){
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
         for (String buttonName : buttons.keySet()){
@@ -171,17 +211,4 @@ public class Main extends TelegramLongPollingBot {
         markup.setKeyboard(keyboard);
         message.setReplyMarkup(markup);
     }
-//    public void sendImage(String name, Long chatid){
-//        SendAnimation animation = new SendAnimation();
-//
-//        InputFile inputFile = new InputFile();
-//        inputFile.setMedia(new File("images/" + name + ".gif"));
-//
-//        animation.setAnimation(inputFile);
-//        animation.setChatId(chatid);
-//
-//        executeAsync(animation);
-//    }
-
-
 }
