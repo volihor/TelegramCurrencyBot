@@ -3,7 +3,7 @@ package org.example;
 import java.text.DecimalFormat;
 
 public class RoundValues {
-/* use public String roundValue(int checkBox, float value) to get rounded value**/
+/** use public String roundValue(int checkBox, float value) to get rounded value*/
 
     public RoundValues() {
     }
