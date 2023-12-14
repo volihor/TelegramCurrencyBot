@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-<changelist name="Uncommitted_changes_before_rebase_[Changes]" date="1702495228640" recycled="false" toDelete="true">
-=======
 <changelist name="Uncommitted_changes_before_rebase_[Changes]" date="1702493552570" recycled="false" toDelete="true">
->>>>>>> 32d53ec (RoundValues class commit)
   <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]/shelved.patch" />
   <option name="DESCRIPTION" value="Uncommitted changes before rebase [Changes]" />
 </changelist>
