@@ -34,14 +34,14 @@ public class PrivatCurrencyService {
         float buyRate = currencyItems.stream()
                 .filter(c -> c.getCcy() == currency)
                 .filter(c -> c.getBase_ccy() == Currency.UAH)
-                .map(c -> c.getBuy())
+                .map(CurrencyItem::getBuy)
                 .findFirst()
                 .orElseThrow();
 
         float sellRate = currencyItems.stream()
                 .filter(c -> c.getCcy() == currency)
                 .filter(c -> c.getBase_ccy() == Currency.UAH)
-                .map(c -> c.getSale())
+                .map(CurrencyItem::getSale)
                 .findFirst()
                 .orElseThrow();
 
