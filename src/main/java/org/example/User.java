@@ -1,14 +1,14 @@
 package org.example;
 
+import java.util.ArrayList;
 import java.util.List;
-//test
-//test2
+
 public class User {
     private Long chatId;
     private int charsAfterComa;
     private String bank;
     private int timeOfNotifications;
-    private List<String> currency;
+    private List<String> currency = new ArrayList<String>();
 
     public User(Long chatId) {
         this.chatId = chatId;
