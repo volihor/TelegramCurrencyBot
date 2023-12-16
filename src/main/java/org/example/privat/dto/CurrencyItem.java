@@ -2,7 +2,6 @@ package org.example.privat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.example.privat.dto.Currency;
 
 @Data
 @AllArgsConstructor
