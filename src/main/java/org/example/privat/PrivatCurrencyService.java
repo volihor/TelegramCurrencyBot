@@ -2,14 +2,17 @@ package org.example.privat;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.example.privat.dto.Currency;
+import org.example.privat.dto.CurrencyItem;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class PrivatCurrencyService {
-    public PrivatCurrencyRate getRate(Currency currency) {
+    public LinkedHashMap<String, Double> getRate() {
         String url = "https://api.privatbank.ua/p24api/pubinfo?exchange&coursid=5";
 
         //Get JSON
@@ -31,21 +34,25 @@ public class PrivatCurrencyService {
                 .getType();
         List<CurrencyItem> currencyItems = new Gson().fromJson(json, typeToken);
 
-        float buyRate = currencyItems.stream()
+        LinkedHashMap<String, Double> ratesMap = new LinkedHashMap<>();
+
+        // Adding USD rates
+        ratesMap.put("USD_buy", getRateForCurrency(currencyItems, Currency.USD, true));
+        ratesMap.put("USD_sell", getRateForCurrency(currencyItems, Currency.USD, false));
+
+        // Adding EUR rates
+        ratesMap.put("EUR_buy", getRateForCurrency(currencyItems, Currency.EUR, true));
+        ratesMap.put("EUR_sell", getRateForCurrency(currencyItems, Currency.EUR, false));
+
+        return ratesMap;
+    }
+
+    private double getRateForCurrency(List<CurrencyItem> currencyItems, Currency currency, boolean isBuyRate) {
+        return currencyItems.stream()
                 .filter(c -> c.getCcy() == currency)
                 .filter(c -> c.getBase_ccy() == Currency.UAH)
-                .map(CurrencyItem::getBuy)
+                .map(isBuyRate ? CurrencyItem::getBuy : CurrencyItem::getSale)
                 .findFirst()
                 .orElseThrow();
-
-        float sellRate = currencyItems.stream()
-                .filter(c -> c.getCcy() == currency)
-                .filter(c -> c.getBase_ccy() == Currency.UAH)
-                .map(CurrencyItem::getSale)
-                .findFirst()
-                .orElseThrow();
-
-        return new PrivatCurrencyRate(buyRate, sellRate);
-
     }
 }

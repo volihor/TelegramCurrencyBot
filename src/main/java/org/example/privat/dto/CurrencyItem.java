@@ -1,13 +1,14 @@
-package org.example.privat;
+package org.example.privat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.example.privat.dto.Currency;
 
 @Data
 @AllArgsConstructor
 public class CurrencyItem {
     private Currency ccy;
     private Currency base_ccy;
-    private float buy;
-    private float sale;
+    private double buy;
+    private double sale;
 }
