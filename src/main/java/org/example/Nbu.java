@@ -17,6 +17,10 @@ public class Nbu {
     private static final String EUR = "EUR";
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
 
+    public static void main(String[] args) {
+        Nbu.getCource().entrySet().forEach(System.out::println);
+        System.out.println("Nbu.getCource() = " + Nbu.getCource());
+    }
   public static Map<String, String> getCource(){
         return getCurrency();
     }
@@ -28,11 +32,11 @@ public class Nbu {
         for (int i = 0; i <jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             if(USD.equals(jsonObject.getString("cc"))) {
-                mapCurrency.put("USD_buy", String.valueOf(jsonObject.getDouble("rate")));
-                mapCurrency.put("USD_sell", "0.0000");
+                mapCurrency.put("USD_buy", "0.0000");
+                mapCurrency.put("USD_sell", String.valueOf(jsonObject.getDouble("rate")));
             }else if (EUR.equals(jsonObject.getString("cc"))) {
-                mapCurrency.put("EUR_buy", String.valueOf(jsonObject.getDouble("rate")));
-                mapCurrency.put("EUR_sell", "0.0000");
+                mapCurrency.put("EUR_buy", "0.0000");
+                mapCurrency.put("EUR_sell", String.valueOf(jsonObject.getDouble("rate")));
             }
         }
         return mapCurrency;
