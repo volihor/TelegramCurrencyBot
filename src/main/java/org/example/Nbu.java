@@ -17,12 +17,7 @@ public class Nbu {
     private static final String EUR = "EUR";
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
 
-//    public static void main(String[] args) {
-//        // for testing purpose only
-//        getCource().entrySet().forEach(System.out::println);
-//    }
-
-    public static Map<String, String> getCource(){
+  public static Map<String, String> getCource(){
         return getCurrency();
     }
 
